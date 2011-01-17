@@ -21,3 +21,7 @@ Licensing
 This is free and unencumbered software released into the public domain.
 
 See COPYING for details.
+
+Issues
+------
+Attemping to compute 0.5^1073 fails with a value (internal representation) of zero.
