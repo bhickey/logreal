@@ -72,7 +72,7 @@ void test_product()
 
 void test_underflow()
 {
-    testing("underflow");
+    testing("underflow safety");
     double MULTIPLIER = 0.01;
     LogDouble ld = MULTIPLIER;
     double rd = MULTIPLIER;
@@ -83,12 +83,21 @@ void test_underflow()
         ++ii;
     }
 
-    for( int jj = 0; jj < ii + 1; ++jj ){
+    for( int jj = 0; jj < ii * 10; ++jj ){
         ld = ld * MULTIPLIER;
     }
 
     result( ld != 0.0 );
-    
+}
+
+void test_ostream()
+{
+    LogDouble zero = 0.0;
+    LogDouble half = 0.5;
+    LogDouble neg_ten = -10.0;
+    cout << zero << " == " << 0.0 << endl;
+    cout << half << " == e^-0.693147" << endl; 
+    cout << neg_ten << " == -e^2.30259" << endl;
 }
 
 int main(int argc, char** argv)
@@ -99,5 +108,6 @@ int main(int argc, char** argv)
     test_sum();
     test_product();
     test_underflow();
+    test_ostream();
     return 0;
 }

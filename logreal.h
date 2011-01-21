@@ -127,16 +127,13 @@ class LogReal {
 
         friend std::ostream& operator<<(std::ostream& out, const LogReal<T>& d)
         {
-            out << (T) d;
-            return out;
-        }
+            if( !d._sign ) { 
+                out << 0; 
+                return out;
+            }
 
-        friend std::istream& operator>>(std::istream& in, LogReal<T>& ld)
-        {
-            T v;
-            in >> v;
-            ld = (LogReal<T>) v;
-            return in;
+            out << (NEGATIVE == d._sign ? "-" : "") << "e^" << d._value;
+            return out;
         }
 
         static T sum(LogReal<T> *reals, int sz)
