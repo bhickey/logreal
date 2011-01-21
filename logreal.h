@@ -60,8 +60,7 @@ class LogReal {
             _sign  = v.getSign();
         }
 
-//        operator T() const { return (_sign * exp(_value)); }
-        T toBase() const { return (_sign * exp(_value)); }
+        T base() const { return (_sign * exp(_value)); }
         
         LogReal<T> operator*(const LogReal<T> &rhs) const
         { 
@@ -83,7 +82,7 @@ class LogReal {
         }
 
         T operator+(const T &rhs) const
-        { return (*this).toBase() + rhs; }
+        { return (*this).base() + rhs; }
 
         T operator-(const T &rhs) const
         { return ((T) *this) - rhs; }
@@ -143,7 +142,7 @@ class LogReal {
         static T sum(LogReal<T> *reals, int sz)
         {
             T s = 0.0;
-            for(int ii = 0; ii < sz; ++ii){ s += reals[ii].toBase(); }
+            for(int ii = 0; ii < sz; ++ii){ s += reals[ii].base(); }
             return s;
         }
 
