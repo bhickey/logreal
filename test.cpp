@@ -50,10 +50,19 @@ void test_add()
 {
     testing("add");
     LogDouble a = 0.4;
-    result( a + 0.1 == 0.5 
-         && -0.2 + a == 0.2 );
+    LogDouble b = 0.1;
+    LogDouble c = 0.5;
+    result( a + b == c ); 
 }
 
+void test_subtract()
+{
+    testing("subtract");
+    LogDouble a = 0.5;
+    LogDouble b = -1.0;
+    LogDouble c = -0.5;
+    result( a + b == c );
+}
 
 void test_sum()
 {
@@ -105,6 +114,7 @@ int main(int argc, char** argv)
     test_identity();
     test_multiply();
     test_add();
+    test_subtract();
     test_sum();
     test_product();
     test_underflow();
