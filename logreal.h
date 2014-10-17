@@ -32,6 +32,8 @@
 #include <cmath>
 #include <iostream>
 
+using namespace std;
+
 template <class T>
 class LogReal {
 
@@ -75,11 +77,11 @@ class LogReal {
     }
 
     LogReal<T> operator/(const LogReal<T> &rhs) const {
-      if( !rhs.getSign() ) {
+      if (!rhs.getSign()) {
         throw "Divide by zero exception";
       }
       LogReal<T> ld = *this;
-      ld.sign_  = ld.sign_ * rhs.getSign();
+      ld.sign_ = ld.sign_ * rhs.getSign();
       ld.value_ = ld.value_ - rhs.getValue();
       return ld;
     }
@@ -118,7 +120,7 @@ class LogReal {
       } else {
         a = value_;
         b = rhs.value_;
-        sign_ = a.sign_;
+        sign_ = sign_;
       }
       if (sign_ == rhs.sign_) {
         value_ = a + log(1 + exp(b - a));
@@ -134,7 +136,7 @@ class LogReal {
     }
 
     LogReal<T> operator-=(const LogReal<T> &rhs) {
-
+      return *this += -rhs;
     }
 
     LogReal<T> operator-() const
@@ -150,49 +152,43 @@ class LogReal {
       return *this;
     }
 
-    bool operator<(const LogReal<T> &rhs) const
-    {
-      if( sign_ != rhs.getSign() ) {
+    bool operator<(const LogReal<T> &rhs) const {
+      if (sign_ != rhs.getSign()) {
         return sign_ < rhs.getSign();
       }
       return value_ < rhs.getValue();
     }
 
-    bool operator<(const T &rhs) const
-    {
+    bool operator<(const T &rhs) const {
       return (*this) < ((LogReal<T>) rhs);
     }
 
-    bool operator==(const LogReal<T> &rhs) const
-    {
+    bool operator==(const LogReal<T> &rhs) const {
       return sign_ == rhs.sign_ && value_ == rhs.value_;
     }
 
-    bool operator==(const T &rhs) const
-    {
-      if( rhs * sign_ < 0 )
-      {
+    bool operator==(const T &rhs) const {
+      if (rhs * sign_ < 0) {
         return false;
       }
       return *this == (LogReal<T>) rhs;
     }
 
     template <class S>
-      bool operator!=(const LogReal<S> &rhs) const
-      {
-        return sign_ != rhs.sign_ || value_ != rhs.value_;
-      }
+    bool operator!=(const LogReal<S> &rhs) const {
+      return sign_ != rhs.sign_
+        || value_ != rhs.value_;
+    }
 
-    bool operator!=(const T &rhs) const
-    {
-      if( rhs * sign_ < 0 )
+    bool operator!=(const T &rhs) const {
+      if (rhs * sign_ < 0) {
         return true;
+      }
       return *this != (LogReal<T>) rhs;
     }
 
-    friend std::ostream& operator<<(std::ostream& out, const LogReal<T>& d)
-    {
-      if( !d.sign_ ) {
+    friend std::ostream& operator<<(std::ostream& out, const LogReal<T>& d) {
+      if (!d.sign_) {
         out << 0;
         return out;
       }
@@ -200,33 +196,41 @@ class LogReal {
       return out;
     }
 
-    static T sum(LogReal<T> *reals, int sz)
-    {
-      T s = 0.0;
-      for(int ii = 0; ii < sz; ++ii){ s += reals[ii].base(); }
+    static LogReal<T> sum(LogReal<T> *reals, int sz) {
+      if (!sz) {
+        return 0;
+      }
+      LogReal<T> s = reals[0];
+      for (int ii = 1; ii < sz; ++ii) {
+        s += reals[ii];
+      }
       return s;
     }
 
-    static LogReal<T> product(LogReal<T> *reals, int sz)
-    {
+    static LogReal<T> product(LogReal<T> *reals, int sz) {
+      if (!sz) {
+        return 0;
+      }
       LogReal<T> p = reals[0];
-      for(int ii = 1; ii < sz; ++ii){
+      for (int ii = 1; ii < sz; ++ii) {
         p.value_ += reals[ii].value_;
         p.sign_  *= reals[ii].sign_;
       }
       return p;
     }
 
-    static void normalize(LogReal<T> *reals, int sz)
-    {
-      T s = sum(reals, sz);
-      for(int ii = 0; ii < sz; ++ii){
-        reals[ii] = reals[ii] / s;
+    static void normalize(LogReal<T> *reals, int sz) {
+      if (!sz) {
+        return;
+      }
+      LogReal<T> s = sum(reals, sz);
+      for (int ii = 0; ii < sz; ++ii) {
+        reals[ii] /=  s;
       }
     }
 
-    inline T   getValue() const{ return value_; }
-    inline int getSign()  const{ return sign_; }
+    inline T   getValue() const { return value_; }
+    inline int getSign()  const { return sign_; }
 
   private:
 
@@ -235,32 +239,37 @@ class LogReal {
     enum SIGN { NEGATIVE = -1, ZERO = 0, POSITIVE = 1 };
 };
 
-  template <class T>
-LogReal<T> operator*(const T &lhs, const LogReal<T> &rhs)
-{ return rhs * lhs; }
+template <class T>
+LogReal<T> operator*(const T &lhs, const LogReal<T> &rhs) {
+  return rhs * lhs;
+}
 
-  template <class T>
-LogReal<T> operator/(const T &lhs, const LogReal<T> &rhs)
-{ return ((LogReal<T>) lhs) / rhs; }
+template <class T>
+LogReal<T> operator/(const T &lhs, const LogReal<T> &rhs) {
+  return ((LogReal<T>) lhs) / rhs;
+}
 
-  template <class T>
-LogReal<T> operator+(const T &lhs, const LogReal<T> &rhs)
-{ return rhs + lhs; }
+template <class T>
+LogReal<T> operator+(const T &lhs, const LogReal<T> &rhs) {
+  return rhs + LogReal<T>(lhs);
+}
 
-  template <class T>
-LogReal<T> operator-(const T &lhs, const LogReal<T> &rhs)
-{ return -rhs + lhs; }
+template <class T>
+LogReal<T> operator-(const T &lhs, const LogReal<T> &rhs) {
+  return rhs + LogReal<T>(-lhs);
+}
 
-  template <class T>
-bool operator<(const T &lhs, const LogReal<T> &rhs)
-{ return LogReal<T>(lhs) < rhs; }
+template <class T>
+bool operator<(const T &lhs, const LogReal<T> &rhs) {
+  return LogReal<T>(lhs) < rhs;
+}
 
-  template <class T>
-bool operator==(const T &lhs, const LogReal<T> &rhs)
-{ return rhs == lhs; }
+template <class T>
+bool operator==(const T &lhs, const LogReal<T> &rhs) {
+  return rhs == lhs;
+}
 
 typedef LogReal<double> LogDouble;
 typedef LogReal<float>  LogFloat;
-typedef LogReal<double> Probability;
 
 #endif
