@@ -18,9 +18,10 @@ Contact Brendan Hickey <[bhickey.net](http://www.bhickey.net)>
 
 Licensing
 ---------
-This is free and unencumbered software released into the public domain.
+This is free software released under the BSD license. If this license
+doesn't work for you, contact me.
 
-See COPYING for details.
+See LICENSE for details.
 
 Issues
 ------
